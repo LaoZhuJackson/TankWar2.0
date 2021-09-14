@@ -9,8 +9,10 @@ import static tankwar.util.Constant.*;//静态引入
 /**
  * 游戏主窗口类
  * 游戏展示所有的内容都在这
+ * implements-->多重继承
+ * runnable-->多线程
  */
-public class GameFrame extends Frame {
+public class GameFrame extends Frame implements Runnable{
     //游戏状态
     public static int gameState;
     //菜单指向
@@ -22,6 +24,8 @@ public class GameFrame extends Frame {
     public GameFrame() {
         initFrame();//初始化窗口属性
         initEventListener();//添加监听事件
+        //启动刷新线程
+        new Thread(this).start();
     }
 
     /**
@@ -40,8 +44,6 @@ public class GameFrame extends Frame {
         setLocationRelativeTo(null);//屏幕居中
         setResizable(false);//不允许调整窗口大小
         setVisible(true);//使窗口可见
-
-        repaint();
     }
 
     /**
@@ -77,7 +79,9 @@ public class GameFrame extends Frame {
     }
 
     private void drawRun(Graphics g) {
-
+        //绘制黑色背景
+        g.setColor(Color.BLACK);//设置画笔颜色
+        g.fillRect(0, 0, Frame_Width, Frame_Height);//实心矩形
     }
 
     private void drawAbout(Graphics g) {
@@ -94,6 +98,7 @@ public class GameFrame extends Frame {
      * @param g 画笔对象，系统提供
      */
     private void drawMenu(Graphics g) {
+        //绘制黑色背景
         g.setColor(Color.BLACK);//设置画笔颜色
         g.fillRect(0, 0, Frame_Width, Frame_Height);//实心矩形
 
@@ -120,6 +125,7 @@ public class GameFrame extends Frame {
 
         //添加按键监听事件
         addKeyListener(new KeyAdapter() {
+            //按下按键时被回调的方法
             @Override
             public void keyPressed(KeyEvent e) {
                 //获得被按下键的键值
@@ -143,47 +149,7 @@ public class GameFrame extends Frame {
                         break;
                 }
             }
-
-            private void keyEventOver(int keyCode) {
-
-            }
-
-            private void keyEventRun(int keyCode) {
-
-            }
-
-            private void keyEventAbout(int keyCode) {
-
-            }
-
-            private void keyEventHelp(int keyCode) {
-
-            }
-
-            //菜单状态下的按键处理
-            private void keyEventMenu(int keyCode) {
-                switch (keyCode) {
-                    case KeyEvent.VK_W:
-                    case KeyEvent.VK_UP:
-                        Select_y -= Dis;
-                        //如果在最上面一项
-                        if (Select_y < y-32) {
-                            Select_y=(Menus.length-1)*Dis+168;
-                        }
-                        repaint();//进行画面更新
-                        break;
-                    case KeyEvent.VK_S:
-                    case KeyEvent.VK_DOWN:
-                        Select_y += Dis;
-                        //如果在最下面一项
-                        if (Select_y >= (Menus.length*Dis+168)) {
-                            Select_y=y-32;
-                        }
-                        repaint();
-                        break;
-                }
-            }
-
+            //按键松开时被回调的方法
             @Override
             public void keyReleased(KeyEvent e) {
 
@@ -191,5 +157,68 @@ public class GameFrame extends Frame {
         });
     }
 
+    private void keyEventOver(int keyCode) {
 
+    }
+
+    private void keyEventRun(int keyCode) {
+
+    }
+
+    private void keyEventAbout(int keyCode) {
+
+    }
+
+    private void keyEventHelp(int keyCode) {
+
+    }
+
+    //菜单状态下的按键处理
+    private void keyEventMenu(int keyCode) {
+        switch (keyCode) {
+            case KeyEvent.VK_W:
+            case KeyEvent.VK_UP:
+                Select_y -= Dis;
+                //如果在最上面一项
+                if (Select_y < y-32) {
+                    Select_y=(Menus.length-1)*Dis+168;
+                }
+                repaint();//进行画面更新
+                break;
+            case KeyEvent.VK_S:
+            case KeyEvent.VK_DOWN:
+                Select_y += Dis;
+                //如果在最下面一项
+                if (Select_y >= (Menus.length*Dis+168)) {
+                    Select_y=y-32;
+                }
+                break;
+            case KeyEvent.VK_ENTER:
+                //TODO
+                newGame();
+                break;
+        }
+    }
+
+    /**
+     * 开始新游戏的状态
+     */
+    private void newGame() {
+        gameState=State_Run;
+        //创建坦克对象，敌方坦克
+    }
+
+
+    @Override
+    public void run() {
+        //控制刷新界面
+        while (true){
+            repaint();
+            try {
+                Thread.sleep(Repaint_Interval);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
