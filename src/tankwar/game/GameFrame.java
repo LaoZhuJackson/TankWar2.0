@@ -17,6 +17,8 @@ public class GameFrame extends Frame implements Runnable{
     public static int gameState;
     //菜单指向
     private int menuIndex;
+    //定义坦克对象
+    private PlayerOne playerOne;
 
     /**
      * 对窗口进行初始化
@@ -65,8 +67,11 @@ public class GameFrame extends Frame implements Runnable{
             case State_About:
                 drawAbout(g);
                 break;
-            case State_Run:
-                drawRun(g);
+            case State_One:
+                drawOne(g);
+                break;
+            case State_Two:
+                drawTwo(g);
                 break;
             case State_Over:
                 drawOver(g);
@@ -78,10 +83,18 @@ public class GameFrame extends Frame implements Runnable{
 
     }
 
-    private void drawRun(Graphics g) {
+    private void drawOne(Graphics g) {
         //绘制黑色背景
         g.setColor(Color.BLACK);//设置画笔颜色
         g.fillRect(0, 0, Frame_Width, Frame_Height);//实心矩形
+        playerOne.paintSelf(g);
+    }
+
+    private void drawTwo(Graphics g) {
+        //绘制黑色背景
+        g.setColor(Color.BLACK);//设置画笔颜色
+        g.fillRect(0, 0, Frame_Width, Frame_Height);//实心矩形
+        playerOne.paintSelf(g);
     }
 
     private void drawAbout(Graphics g) {
@@ -141,8 +154,11 @@ public class GameFrame extends Frame implements Runnable{
                     case State_About:
                         keyEventAbout(keyCode);
                         break;
-                    case State_Run:
-                        keyEventRun(keyCode);
+                    case State_One:
+                        keyEventOne(keyCode);
+                        break;
+                    case State_Two:
+                        keyEventTwo(keyCode);
                         break;
                     case State_Over:
                         keyEventOver(keyCode);
@@ -161,7 +177,16 @@ public class GameFrame extends Frame implements Runnable{
 
     }
 
-    private void keyEventRun(int keyCode) {
+    private void keyEventOne(int keyCode) {
+        switch (keyCode){
+            case KeyEvent.VK_W ->playerOne.upward();
+            case KeyEvent.VK_S ->playerOne.downward();
+            case KeyEvent.VK_A ->playerOne.leftward();
+            case KeyEvent.VK_D ->playerOne.rightward();
+        }
+    }
+
+    private void keyEventTwo(int keyCode) {
 
     }
 
@@ -181,7 +206,7 @@ public class GameFrame extends Frame implements Runnable{
                 Select_y -= Dis;
                 //如果在最上面一项
                 if (Select_y < y-32) {
-                    Select_y=(Menus.length-1)*Dis+168;
+                    Select_y=(Menus.length-1)*Dis+118;
                 }
                 repaint();//进行画面更新
                 break;
@@ -189,7 +214,7 @@ public class GameFrame extends Frame implements Runnable{
             case KeyEvent.VK_DOWN:
                 Select_y += Dis;
                 //如果在最下面一项
-                if (Select_y >= (Menus.length*Dis+168)) {
+                if (Select_y >= (Menus.length*Dis+118)) {
                     Select_y=y-32;
                 }
                 break;
@@ -204,8 +229,9 @@ public class GameFrame extends Frame implements Runnable{
      * 开始新游戏的状态
      */
     private void newGame() {
-        gameState=State_Run;
+        gameState=State_One;
         //创建坦克对象，敌方坦克
+        playerOne=new PlayerOne("images/p1tankU.gif",125,510,"images/p1tankU.gif", "images/p1tankL.gif", "images/p1tankR.gif", "images/p1tankD.gif");
     }
 
 

@@ -16,18 +16,20 @@ public class Constant {
     public static final int State_Menu=0;
     public static final int State_Help=1;
     public static final int State_About=2;
-    public static final int State_Run=3;
-    public static final int State_Over=4;
+    public static final int State_One=3;
+    public static final int State_Two=4;
+    public static final int State_Over=5;
 
     public static final int Str_Width=85;
     public static final int x=350;//字符横坐标
     public static  int Select_x=x-80;
-    public static final int y=200;//字符纵坐标
+    public static final int y=150;//字符纵坐标
     public static  int Select_y=y-32;
     public static final int Dis=80;//间距
 
     public static final String[] Menus={
-            "开始游戏",
+            "单人游戏",
+            "双人游戏",
             "继续游戏",
             "游戏帮助",
             "关于游戏",
