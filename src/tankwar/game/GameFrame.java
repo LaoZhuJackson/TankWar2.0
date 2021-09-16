@@ -17,6 +17,9 @@ public class GameFrame extends Frame implements Runnable{
     public static int gameState;
     //菜单指向
     private int menuIndex;
+    //标题栏高度
+    public static int titleBarH;
+
     //定义坦克对象
     private PlayerOne playerOne;
 
@@ -46,6 +49,9 @@ public class GameFrame extends Frame implements Runnable{
         setLocationRelativeTo(null);//屏幕居中
         setResizable(false);//不允许调整窗口大小
         setVisible(true);//使窗口可见
+
+        //求标题栏高度
+        titleBarH=getInsets().top;
     }
 
     /**
@@ -146,60 +152,92 @@ public class GameFrame extends Frame implements Runnable{
                 //不同游戏状态下对应的处理方法不同
                 switch (gameState) {
                     case State_Menu:
-                        keyEventMenu(keyCode);
+                        keyPressedEventMenu(keyCode);
                         break;
                     case State_Help:
-                        keyEventHelp(keyCode);
+                        keyPressedEventHelp(keyCode);
                         break;
                     case State_About:
-                        keyEventAbout(keyCode);
+                        keyPressedEventAbout(keyCode);
                         break;
                     case State_One:
-                        keyEventOne(keyCode);
+                        keyPressedEventOne(keyCode);
                         break;
                     case State_Two:
-                        keyEventTwo(keyCode);
+                        keyPressedEventTwo(keyCode);
                         break;
                     case State_Over:
-                        keyEventOver(keyCode);
+                        keyPressedEventOver(keyCode);
                         break;
                 }
             }
             //按键松开时被回调的方法
             @Override
             public void keyReleased(KeyEvent e) {
-
+                //获得被按下键的键值
+                int keyCode = e.getKeyCode();
+                //不同游戏状态下对应的处理方法不同
+                switch (gameState) {
+                    case State_One:
+                        keyReleasedEventOne(keyCode);
+                        break;
+                    case State_Two:
+                        keyReleasedEventTwo(keyCode);
+                        break;
+                }
             }
         });
     }
 
-    private void keyEventOver(int keyCode) {
+    private void keyReleasedEventTwo(int keyCode) {
 
     }
-
-    private void keyEventOne(int keyCode) {
-        switch (keyCode){
-            case KeyEvent.VK_W ->playerOne.upward();
-            case KeyEvent.VK_S ->playerOne.downward();
-            case KeyEvent.VK_A ->playerOne.leftward();
-            case KeyEvent.VK_D ->playerOne.rightward();
+    //按键松开后的处理方法,设置状态可以解决启动停顿问题
+    private void keyReleasedEventOne(int keyCode) {
+        switch (keyCode) {
+            case KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D -> playerOne.setState(Tank.State_Stand);
         }
     }
 
-    private void keyEventTwo(int keyCode) {
+    private void keyPressedEventOver(int keyCode) {
 
     }
 
-    private void keyEventAbout(int keyCode) {
+    private void keyPressedEventOne(int keyCode) {
+        switch (keyCode){
+            case KeyEvent.VK_W ->{
+                playerOne.upward();
+                playerOne.setState(Tank.State_Move);
+            }
+            case KeyEvent.VK_S ->{
+                playerOne.downward();
+                playerOne.setState(Tank.State_Move);
+            }
+            case KeyEvent.VK_A ->{
+                playerOne.leftward();
+                playerOne.setState(Tank.State_Move);
+            }
+            case KeyEvent.VK_D ->{
+                playerOne.rightward();
+                playerOne.setState(Tank.State_Move);
+            }
+        }
+    }
+
+    private void keyPressedEventTwo(int keyCode) {
 
     }
 
-    private void keyEventHelp(int keyCode) {
+    private void keyPressedEventAbout(int keyCode) {
+
+    }
+
+    private void keyPressedEventHelp(int keyCode) {
 
     }
 
     //菜单状态下的按键处理
-    private void keyEventMenu(int keyCode) {
+    private void keyPressedEventMenu(int keyCode) {
         switch (keyCode) {
             case KeyEvent.VK_W:
             case KeyEvent.VK_UP:

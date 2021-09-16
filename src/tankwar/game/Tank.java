@@ -30,9 +30,9 @@ public abstract class Tank  {
 
     private int hp=Default_HP;
     private int atk;
-    private int speed;
-    private Direction dir=Direction.UP;
-    private int state=State_Stand;
+    public int speed=Default_Speed;
+    public Direction dir=Direction.UP;
+    public int state=State_Stand;
 
     //TODO 炮弹
     private List bullet=new ArrayList();
@@ -48,41 +48,28 @@ public abstract class Tank  {
         this.downImg = downImg;
     }
 
-    //坦克移动
+    //坦克移动，改变贴图和方向
     public void leftward() {
         dir = Direction.LEFT;
         setImg(leftImg);
-        if (!hitWall(x - speed, y) && !moveToBorder(x - speed, y))//先碰撞就检测再移动
-            x -= speed;
     }
 
     public void upward() {
         dir = Direction.UP;
         setImg(upImg);
-        if (!hitWall(x, y - speed) && !moveToBorder(x, y - speed))//先碰撞就检测再移动
-            y -= speed;
+
     }
 
     public void rightward() {
         dir = Direction.RIGHT;
         setImg(rightImg);
-        if (!hitWall(x + speed, y) && !moveToBorder(x + speed, y))//先碰撞就检测再移动
-            x += speed;
+
     }
 
     public void downward() {
         dir = Direction.DOWN;
         setImg(downImg);
-        if (!hitWall(x, y + speed) && !moveToBorder(x, y + speed))//先碰撞就检测再移动
-            y += speed;
-    }
-    //TODO
-    private boolean moveToBorder(int x, int i) {
-        return false;
-    }
 
-    private boolean hitWall(int x, int i) {
-        return false;
     }
 
     //定义setImg函数
@@ -128,6 +115,14 @@ public abstract class Tank  {
 
     public void setSpeed(int speed) {
         this.speed = speed;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     public List getBullet() {
