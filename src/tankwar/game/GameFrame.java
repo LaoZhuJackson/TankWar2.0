@@ -199,12 +199,15 @@ public class GameFrame extends Frame implements Runnable{
     }
 
     private void keyReleasedEventTwo(int keyCode) {
-
+        switch (keyCode) {
+            case KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D -> playerOne.setState(PlayerOne.State_Stand);
+            //case KeyEvent.VK_UP , KeyEvent.VK_DOWN , KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> playerTwo.setState(PlayerTwo.State_Stand);
+        }
     }
     //按键松开后的处理方法,设置状态可以解决启动停顿问题
     private void keyReleasedEventOne(int keyCode) {
         switch (keyCode) {
-            case KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D -> playerOne.setState(Tank.State_Stand);
+            case KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D -> playerOne.setState(PlayerOne.State_Stand);
         }
     }
 
