@@ -1,8 +1,6 @@
 package tankwar.game;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 坦克类
@@ -25,17 +23,14 @@ public abstract class Tank  {
     public static final int State_Die=2;
     //坦克的初始生命
     public static final int Default_HP=1000;
+    //坦克初始攻击
+    public static int Default_Atk=100;
     //坦克坐标
     public int x,y;
-
-    private int hp=Default_HP;
-    private int atk;
-    public int speed=Default_Speed;
+    //坦克初始方向
     public Direction dir=Direction.UP;
+    //坦克初始状态
     public int state=State_Stand;
-
-    //TODO 炮弹
-    private List bullet=new ArrayList();
 
     public Tank(String img,int x, int y,String upImg, String leftImg, String rightImg, String downImg) {
         this.img = Toolkit.getDefaultToolkit().getImage(img);//将图片参数从Image类型转换成String类型
@@ -57,82 +52,37 @@ public abstract class Tank  {
     public void upward() {
         dir = Direction.UP;
         setImg(upImg);
-
     }
 
     public void rightward() {
         dir = Direction.RIGHT;
         setImg(rightImg);
-
     }
 
     public void downward() {
         dir = Direction.DOWN;
         setImg(downImg);
-
+    }
+    //获取坦克头部坐标
+    public Point getHeadPoint() {
+        switch (dir) {
+            case LEFT:
+                return new Point(x - 13, y + length / 2 - 8);//横坐标不变，纵坐标加半个坦克长度
+            case RIGHT:
+                return new Point(x + length - 4, y + length / 2 - 8);
+            case UP:
+                return new Point(x + length / 2 - 8, y - 12);
+            case DOWN:
+                return new Point(x + length / 2 - 8, y + length - 1);
+            default:
+                return null;
+        }
     }
 
     //定义setImg函数
     public void setImg(String img) {
         this.img = Toolkit.getDefaultToolkit().getImage(img);
     }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public int getHp() {
-        return hp;
-    }
-
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
-
-    public int getAtk() {
-        return atk;
-    }
-
-    public void setAtk(int atk) {
-        this.atk = atk;
-    }
-
-    public int getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(int speed) {
-        this.speed = speed;
-    }
-
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public List getBullet() {
-        return bullet;
-    }
-
-    public void setBullet(List bullet) {
-        this.bullet = bullet;
-    }
-
     /**
      * 绘制坦克
      * @param g

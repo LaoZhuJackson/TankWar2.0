@@ -221,6 +221,9 @@ public class GameFrame extends Frame implements Runnable{
                 playerOne.rightward();
                 playerOne.setState(Tank.State_Move);
             }
+            case KeyEvent.VK_J ->{
+                playerOne.attack();
+            }
         }
     }
 
