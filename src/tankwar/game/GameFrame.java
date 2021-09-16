@@ -3,6 +3,7 @@ package tankwar.game;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 
 import static tankwar.util.Constant.*;//静态引入
 
@@ -13,6 +14,8 @@ import static tankwar.util.Constant.*;//静态引入
  * runnable-->多线程
  */
 public class GameFrame extends Frame implements Runnable{
+    //定义一张和屏幕大小一致的图片
+    private BufferedImage bufImg=new BufferedImage(Frame_Width,Frame_Height,BufferedImage.TYPE_4BYTE_ABGR);
     //游戏状态
     public static int gameState;
     //菜单指向
@@ -22,6 +25,7 @@ public class GameFrame extends Frame implements Runnable{
 
     //定义坦克对象
     private PlayerOne playerOne;
+    private PlayerOne playerTwo;
 
     /**
      * 对窗口进行初始化
@@ -62,27 +66,32 @@ public class GameFrame extends Frame implements Runnable{
      * @param g 系统提供的画笔，系统进行初始化
      */
     public void update(Graphics g) {
-        g.setFont(Game_Font);
+        //得到图片的画笔
+        Graphics gImg = bufImg.getGraphics();
+        //使用图片画笔将所有内容绘制到图片上
+        gImg.setFont(Game_Font);
         switch (gameState) {
             case State_Menu:
-                drawMenu(g);
+                drawMenu(gImg);
                 break;
             case State_Help:
-                drawHelp(g);
+                drawHelp(gImg);
                 break;
             case State_About:
-                drawAbout(g);
+                drawAbout(gImg);
                 break;
             case State_One:
-                drawOne(g);
+                drawOne(gImg);
                 break;
             case State_Two:
-                drawTwo(g);
+                drawTwo(gImg);
                 break;
             case State_Over:
-                drawOver(g);
+                drawOver(gImg);
                 break;
         }
+        //使用系统画笔，将图片绘制到Frame上
+        g.drawImage(bufImg,0,0,null);
     }
 
     private void drawOver(Graphics g) {
@@ -244,9 +253,11 @@ public class GameFrame extends Frame implements Runnable{
         switch (keyCode) {
             case KeyEvent.VK_W:
             case KeyEvent.VK_UP:
+                temp--;
                 Select_y -= Dis;
                 //如果在最上面一项
                 if (Select_y < y-32) {
+                    temp=Menus.length;
                     Select_y=(Menus.length-1)*Dis+118;
                 }
                 repaint();//进行画面更新
@@ -254,14 +265,21 @@ public class GameFrame extends Frame implements Runnable{
             case KeyEvent.VK_S:
             case KeyEvent.VK_DOWN:
                 Select_y += Dis;
+                temp++;
                 //如果在最下面一项
                 if (Select_y >= (Menus.length*Dis+118)) {
+                    temp=1;
                     Select_y=y-32;
                 }
                 break;
             case KeyEvent.VK_ENTER:
+                if(temp==State_One){
+                    newGame_playerOne();
+                }
                 //TODO
-                newGame();
+                else if(temp==State_Two){
+                    newGame_playerTwo();
+                }
                 break;
         }
     }
@@ -269,12 +287,17 @@ public class GameFrame extends Frame implements Runnable{
     /**
      * 开始新游戏的状态
      */
-    private void newGame() {
+    private void newGame_playerOne() {
         gameState=State_One;
         //创建坦克对象，敌方坦克
         playerOne=new PlayerOne("images/p1tankU.gif",125,510,"images/p1tankU.gif", "images/p1tankL.gif", "images/p1tankR.gif", "images/p1tankD.gif");
     }
 
+    private void newGame_playerTwo() {
+        gameState=State_Two;
+        //创建坦克对象
+        //playerTwo=new PlayerTwo("images/p2tankU.gif",615,510,"images/p2tankU.gif", "images/p2tankL.gif", "images/p2tankR.gif", "images/p2tankD.gif");
+    }
 
     @Override
     public void run() {

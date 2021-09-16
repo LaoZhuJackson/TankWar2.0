@@ -14,11 +14,12 @@ public class Constant {
 
     /***********游戏菜单相关**********/
     public static final int State_Menu=0;
-    public static final int State_Help=1;
-    public static final int State_About=2;
-    public static final int State_One=3;
-    public static final int State_Two=4;
-    public static final int State_Over=5;
+    public static final int State_One=1;
+    public static final int State_Two=2;
+    public static final int State_Continue=3;
+    public static final int State_Help=4;
+    public static final int State_About=5;
+    public static final int State_Over=6;
 
     public static final int Str_Width=85;
     public static final int x=350;//字符横坐标
@@ -41,4 +42,6 @@ public class Constant {
     public static final int Repaint_Interval=30;
     //图片
     public static final Image Menu_Select=Toolkit.getDefaultToolkit().getImage("images/selectTank.gif");
+    //暂存
+    public static int temp=1;
 }

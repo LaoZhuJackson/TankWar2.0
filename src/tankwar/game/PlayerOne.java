@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerOne extends Tank{
-    //boolean left, right, up, down;
+    //初始参数
     private int atk=Default_Atk;
     private int HP=Default_HP;
     private int speed=Default_Speed;
