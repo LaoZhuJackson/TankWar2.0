@@ -33,7 +33,7 @@ public class BulletsPool {
         }else{
             bullet=pool.remove(0);//如果有，则remove出第0个子弹
         }
-        System.out.println("获取了一个对象，剩余："+pool.size());
+        //System.out.println("获取了一个对象，剩余："+pool.size());
         return bullet;
     }
     //子弹被销毁时，归还到池塘
@@ -43,6 +43,6 @@ public class BulletsPool {
             return;
         }
         pool.add(bullet);
-        System.out.println("对象池中归还了一个子弹对象，当前数量为："+pool.size());
+        //System.out.println("对象池中归还了一个子弹对象，当前数量为："+pool.size());
     }
 }

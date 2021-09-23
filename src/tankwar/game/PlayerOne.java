@@ -55,23 +55,6 @@ public class PlayerOne extends Tank {
         }
     }
 
-    private boolean moveToBorder(int x, int y) {
-        //左右边界
-        if (x < 0 || x + length > Constant.Frame_Width) {
-            return true;
-        }
-        //上下边界
-        else if (y < GameFrame.titleBarH || y + length > Constant.Frame_Height) {
-            return true;
-        }
-        return false;
-    }
-
-    //TODO
-    private boolean hitWall(int x, int i) {
-        return false;
-    }
-
     public void attack() {
         Point p = getHeadPoint();
         //从对象池中获取子弹对象
@@ -100,7 +83,7 @@ public class PlayerOne extends Tank {
                 BulletsPool.theReturn(remove);//归还回对象池
             }
         }
-        System.out.println("坦克子弹数量："+PlayerOne_bulletList.size());
+        //System.out.println("坦克子弹数量："+PlayerOne_bulletList.size());
     }
 
     public int getAtk() {

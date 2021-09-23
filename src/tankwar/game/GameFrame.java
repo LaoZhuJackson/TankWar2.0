@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import static tankwar.util.Constant.*;//静态引入
 
@@ -26,6 +28,8 @@ public class GameFrame extends Frame implements Runnable{
     //定义坦克对象
     private PlayerOne playerOne;
     private PlayerOne playerTwo;
+    //定义敌方坦克
+    private  List<Tank> enemies=new ArrayList<>();
 
     /**
      * 对窗口进行初始化
@@ -97,12 +101,23 @@ public class GameFrame extends Frame implements Runnable{
     private void drawOver(Graphics g) {
 
     }
-
+    /*
+    游戏运行状态时的内容绘制
+     */
     private void drawOne(Graphics g) {
         //绘制黑色背景
         g.setColor(Color.BLACK);//设置画笔颜色
         g.fillRect(0, 0, Frame_Width, Frame_Height);//实心矩形
-        playerOne.paintSelf(g);
+
+        drawEnemies(g);
+        playerOne.paintSelf(g);//越后绘制，越在上层
+    }
+
+    private void drawEnemies(Graphics g){
+        for (int i = 0; i < enemies.size(); i++) {
+            Tank enemy = enemies.get(i);
+            enemy.paintSelf(g);
+        }
     }
 
     private void drawTwo(Graphics g) {
@@ -292,8 +307,26 @@ public class GameFrame extends Frame implements Runnable{
      */
     private void newGame_playerOne() {
         gameState=State_One;
-        //创建坦克对象，敌方坦克
+        //创建玩家
         playerOne=new PlayerOne("images/p1tankU.gif",125,510,"images/p1tankU.gif", "images/p1tankL.gif", "images/p1tankR.gif", "images/p1tankD.gif");
+        //使用单独线程用于控制生成敌方坦克
+        new Thread(){
+            @Override
+            public void run() {
+                while(true){
+                    if(enemies.size()<Enemy_Max){
+                        EnemyTank enemy = EnemyTank.createEnemy();
+                        enemies.add(enemy);
+                        //System.out.println("当前坦克数量："+enemies.size());
+                    }
+                    try {
+                        Thread.sleep(Enemy_Born);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
     }
 
     private void newGame_playerTwo() {

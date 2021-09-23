@@ -44,4 +44,8 @@ public class Constant {
     public static final Image Menu_Select=Toolkit.getDefaultToolkit().getImage("images/selectTank.gif");
     //暂存
     public static int temp=1;
+    //最大坦克数量
+    public static final int Enemy_Max=10;
+    //敌人生成速度
+    public static final int Enemy_Born=5000;
 }

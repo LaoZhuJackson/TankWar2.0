@@ -1,5 +1,7 @@
 package tankwar.game;
 
+import tankwar.util.Constant;
+
 import java.awt.*;
 
 /**
@@ -17,6 +19,7 @@ public abstract class Tank  {
     public static final int length=60;
     //默认速度 每帧4像素
     public static final int Default_Speed=4;
+    public static final int enemy_Default_Speed=4;
     //坦克状态
     public static final int State_Stand=0;
     public static final int State_Move=1;
@@ -31,6 +34,7 @@ public abstract class Tank  {
     public Direction dir=Direction.UP;
     //坦克初始状态
     public int state=State_Stand;
+    public boolean isEnemy=false;
 
     public Tank(String img,int x, int y,String upImg, String leftImg, String rightImg, String downImg) {
         this.img = Toolkit.getDefaultToolkit().getImage(img);//将图片参数从Image类型转换成String类型
@@ -77,6 +81,18 @@ public abstract class Tank  {
             default:
                 return null;
         }
+    }
+
+    public boolean moveToBorder(int x, int y) {
+        //左右边界
+        if (x < 0 || x + length > Constant.Frame_Width) {
+            return true;
+        }
+        //上下边界
+        else if (y < GameFrame.titleBarH || y + length > Constant.Frame_Height) {
+            return true;
+        }
+        return false;
     }
 
     //定义setImg函数
