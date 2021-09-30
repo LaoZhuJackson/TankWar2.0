@@ -24,11 +24,10 @@ public class PlayerOne extends Tank {
         //依旧需要分类处理
         switch (state) {
             case State_Stand:
+            case State_Die:
                 break;
             case State_Move:
                 move();
-                break;
-            case State_Die:
                 break;
         }
     }

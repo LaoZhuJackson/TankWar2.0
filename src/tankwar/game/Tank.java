@@ -19,6 +19,7 @@ public abstract class Tank  {
     public static final int length=60;
     //默认速度 每帧4像素
     public static final int Default_Speed=4;
+    public static final int speed=Default_Speed;
     public static final int enemy_Default_Speed=4;
     //坦克状态
     public static final int State_Stand=0;
@@ -51,21 +52,29 @@ public abstract class Tank  {
     public void leftward() {
         dir = Direction.LEFT;
         setImg(leftImg);
+        if (!moveToBorder(x - speed, y))//先碰撞就检测再移动
+            x -= speed;
     }
 
     public void upward() {
         dir = Direction.UP;
         setImg(upImg);
+        if (!moveToBorder(x, y + speed))//先碰撞就检测再移动
+            y -= speed;
     }
 
     public void rightward() {
         dir = Direction.RIGHT;
         setImg(rightImg);
+        if (!moveToBorder(x - speed, y))//先碰撞就检测再移动
+            x += speed;
     }
 
     public void downward() {
         dir = Direction.DOWN;
         setImg(downImg);
+        if (!moveToBorder(x, y + speed))//先碰撞就检测再移动
+            y += speed;
     }
     //获取坦克头部坐标
     public Point getHeadPoint() {
@@ -99,6 +108,15 @@ public abstract class Tank  {
     public void setImg(String img) {
         this.img = Toolkit.getDefaultToolkit().getImage(img);
     }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public void setDir(Direction dir) {
+        this.dir = dir;
+    }
+
     /**
      * 绘制坦克
      * @param g
