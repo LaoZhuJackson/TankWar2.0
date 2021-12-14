@@ -76,7 +76,7 @@ public class Bullet {
     }
 
     public int getX() {
-        return x;
+        return x+7;
     }
 
     public void setX(int x) {
@@ -84,7 +84,7 @@ public class Bullet {
     }
 
     public int getY() {
-        return y;
+        return y+7;
     }
 
     public void setY(int y) {
@@ -130,4 +130,5 @@ public class Bullet {
     public void setImg(String img) {
         this.img = Toolkit.getDefaultToolkit().getImage(img);
     }
+
 }

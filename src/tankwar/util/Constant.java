@@ -12,6 +12,10 @@ public class Constant {
     public static final int Frame_Width = 800;
     public static final int Frame_Height = 600;
 
+    //动态获得屏幕的宽高
+//    public static final int Screen_W=Toolkit.getDefaultToolkit().getScreenSize().width;
+//    public static final int Screen_H=Toolkit.getDefaultToolkit().getScreenSize().height;
+
     /***********游戏菜单相关**********/
     public static final int State_Menu = 0;
     public static final int State_One = 1;

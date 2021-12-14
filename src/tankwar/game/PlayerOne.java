@@ -13,7 +13,7 @@ public class PlayerOne extends Tank {
     private int HP = Default_HP;
     private int speed = Default_Speed;
 
-    private List<Bullet> PlayerOne_bulletList = new ArrayList();
+    private List<Bullet> PlayerOne_bulletList = new ArrayList<>();
 
     public PlayerOne(String img, int x, int y, String upImg, String leftImg, String rightImg, String downImg) {
         super(img, x, y, upImg, leftImg, rightImg, downImg);
@@ -131,6 +131,10 @@ public class PlayerOne extends Tank {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public List<Bullet> getPlayerOne_bulletList() {
+        return PlayerOne_bulletList;
     }
 
     @Override

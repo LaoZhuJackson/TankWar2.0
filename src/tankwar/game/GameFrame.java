@@ -29,7 +29,7 @@ public class GameFrame extends Frame implements Runnable{
     private PlayerOne playerOne;
     private PlayerOne playerTwo;
     //定义敌方坦克
-    private  List<Tank> enemies=new ArrayList<>();
+    private  List<EnemyTank> enemies=new ArrayList<>();
 
     /**
      * 对窗口进行初始化
@@ -111,11 +111,37 @@ public class GameFrame extends Frame implements Runnable{
 
         drawEnemies(g);
         playerOne.paintSelf(g);//越后绘制，越在上层
+
+        //子弹与坦克的碰撞方法
+        bulletCollideTank();
+
+        //调用绘制爆炸效果的方法
+        drawExplodes(g);
+    }
+
+    private void bulletCollideTank(){
+        //我方子弹与敌方坦克碰撞
+        for(EnemyTank enemy:enemies){
+            enemy.CollideBullets(playerOne.getPlayerOne_bulletList());
+        }
+        //敌方坦克子弹与我方坦克碰撞
+        for (EnemyTank enemy : enemies) {
+            playerOne.CollideBullets(enemy.getEnemy_bulletList());
+        }
+    }
+
+    //所有坦克的爆炸效果
+    private void drawExplodes(Graphics g){
+        //敌方坦克添加
+        for (EnemyTank enemy : enemies) {
+            enemy.drawExplodes(g);
+        }
+        //我方坦克
+        playerOne.drawExplodes(g);
     }
 
     private void drawEnemies(Graphics g){
-        for (int i = 0; i < enemies.size(); i++) {
-            Tank enemy = enemies.get(i);
+        for (Tank enemy : enemies) {
             enemy.paintSelf(g);
         }
     }

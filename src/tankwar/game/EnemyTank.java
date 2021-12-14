@@ -13,7 +13,7 @@ public class EnemyTank extends Tank {
     private int speed = enemy_Default_Speed;
     //记录AI5秒开始的时间
     private long AI_Time;
-    private List<Bullet> Enemy_bulletList = new ArrayList();
+    private List<Bullet> Enemy_bulletList = new ArrayList<>();
     private int atk = Default_Atk;
 
     public EnemyTank(String img, int x, int y, String upImg, String leftImg, String rightImg, String downImg) {
@@ -66,7 +66,7 @@ public class EnemyTank extends Tank {
 
     public void attack() {
         Point p = getHeadPoint();
-        System.out.println("当前坦克子弹方向："+dir);
+        System.out.println("当前坦克子弹方向：" + dir);
         //从对象池中获取子弹对象
         Bullet bullet = BulletsPool.get();
         //设置子弹属性
@@ -88,7 +88,7 @@ public class EnemyTank extends Tank {
         //遍历所有子弹，将不可见的子弹移除，并还原回对象池
         for (int i = 0; i < Enemy_bulletList.size(); i++) {
             Bullet bullet = Enemy_bulletList.get(i);
-            if(!bullet.isVisible()){
+            if (!bullet.isVisible()) {
                 Bullet remove = Enemy_bulletList.remove(i);//从当前子弹列表移除
                 BulletsPool.theReturn(remove);//归还回对象池
             }
@@ -127,12 +127,16 @@ public class EnemyTank extends Tank {
             //间隔五秒，随机一个状态
             setState(MyUtil.getRandomNumber(0, 2) == 0 ? State_Stand : State_Move);//0->stand，1->move
             setDir(getRandomDirection());//随机方向
-            System.out.println("坦克方向："+dir);
-            AI_Time=System.currentTimeMillis();//重置AI_Time
+            System.out.println("坦克方向：" + dir);
+            AI_Time = System.currentTimeMillis();//重置AI_Time
         }
-        if (Math.random()<Constant.Enemy_Fire_Percent){//随机生成0~1的随机数实现5%
+        if (Math.random() < Constant.Enemy_Fire_Percent) {//随机生成0~1的随机数实现5%
             attack();
         }
+    }
+
+    public List<Bullet> getEnemy_bulletList() {
+        return Enemy_bulletList;
     }
 
     @Override

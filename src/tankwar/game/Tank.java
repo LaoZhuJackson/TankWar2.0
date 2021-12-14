@@ -1,8 +1,11 @@
 package tankwar.game;
 
 import tankwar.util.Constant;
+import tankwar.util.MyUtil;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 坦克类
@@ -36,6 +39,8 @@ public abstract class Tank  {
     //坦克初始状态
     public int state=State_Stand;
     public boolean isEnemy=false;
+    //使用容器保存当前坦克上所有爆炸效果
+    private List<Explode>explodes=new ArrayList<>();
 
     public Tank(String img,int x, int y,String upImg, String leftImg, String rightImg, String downImg) {
         this.img = Toolkit.getDefaultToolkit().getImage(img);//将图片参数从Image类型转换成String类型
@@ -104,6 +109,33 @@ public abstract class Tank  {
         return false;
     }
 
+    //坦克和子弹碰撞
+    public void CollideBullets(List<Bullet> bullets){
+        //遍历所有子弹，和当前坦克进行碰撞检测
+        for (Bullet bullet : bullets) {
+            int bulletX = bullet.getX();
+            int bulletY = bullet.getY();
+            //子弹与坦克碰撞
+            if (MyUtil.isCollide(this.x +length/2,y+length/2,length/2,bulletX,bulletY)){
+                //子弹消失
+                bullet.setVisible(false);
+                //坦克操作
+                //爆炸效果,以当前被击中的坦克坐标为爆炸坐标
+                explodes.add(new Explode(x,y));
+            }
+        }
+    }
+
+    /**
+     * 绘制当前坦克的所有爆炸效果
+     * @param g
+     */
+    public void drawExplodes(Graphics g){
+        for (Explode explode : explodes) {
+            explode.paintSelf(g);
+        }
+    }
+
     //定义setImg函数
     public void setImg(String img) {
         this.img = Toolkit.getDefaultToolkit().getImage(img);
@@ -116,6 +148,8 @@ public abstract class Tank  {
     public void setDir(Direction dir) {
         this.dir = dir;
     }
+
+
 
     /**
      * 绘制坦克
