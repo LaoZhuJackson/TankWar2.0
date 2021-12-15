@@ -29,7 +29,7 @@ public class GameFrame extends Frame implements Runnable{
     private PlayerOne playerOne;
     private PlayerOne playerTwo;
     //定义敌方坦克
-    private  List<EnemyTank> enemies=new ArrayList<>();
+    private  List<Tank> enemies=new ArrayList<>();
 
     /**
      * 对窗口进行初始化
@@ -121,29 +121,36 @@ public class GameFrame extends Frame implements Runnable{
 
     private void bulletCollideTank(){
         //我方子弹与敌方坦克碰撞
-        for(EnemyTank enemy:enemies){
-            enemy.CollideBullets(playerOne.getPlayerOne_bulletList(),enemy.HP);
+        for(Tank enemy:enemies){
+            enemy.CollideBullets(playerOne.getPlayerOne_bulletList());
         }
         //敌方坦克子弹与我方坦克碰撞
-        for (EnemyTank enemy : enemies) {
-            playerOne.CollideBullets(enemy.getEnemy_bulletList(),playerOne.HP);
+        for (Tank enemy : enemies) {
+            playerOne.CollideBullets(enemy.getEnemy_bulletList());
         }
     }
 
     //所有坦克的爆炸效果
     private void drawExplodes(Graphics g){
         //敌方坦克添加
-        for (EnemyTank enemy : enemies) {
+        for (Tank enemy : enemies) {
             enemy.drawExplodes(g);
         }
         //我方坦克
         playerOne.drawExplodes(g);
     }
-
+    //绘制所有敌方坦克，如果死亡则移除
     private void drawEnemies(Graphics g){
-        for (Tank enemy : enemies) {
-            enemy.paintSelf(g);
+        for (int i = 0; i < enemies.size(); i++) {
+            Tank enemyTank = enemies.get(i);
+            if (enemyTank.idDie()){
+                enemies.remove(i);
+                i--;
+                continue;
+            }
+            enemyTank.paintSelf(g);
         }
+        System.out.println("敌人数量："+enemies.size());
     }
 
     private void drawTwo(Graphics g) {
@@ -242,7 +249,6 @@ public class GameFrame extends Frame implements Runnable{
     private void keyReleasedEventTwo(int keyCode) {
         switch (keyCode) {
             case KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D -> playerOne.setState(PlayerOne.State_Stand);
-            //case KeyEvent.VK_UP , KeyEvent.VK_DOWN , KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> playerTwo.setState(PlayerTwo.State_Stand);
         }
     }
     //按键松开后的处理方法,设置状态可以解决启动停顿问题
@@ -341,9 +347,8 @@ public class GameFrame extends Frame implements Runnable{
             public void run() {
                 while(true){
                     if(enemies.size()<Enemy_Max){
-                        EnemyTank enemy = EnemyTank.createEnemy();
+                        Tank enemy = EnemyTank.createEnemy();
                         enemies.add(enemy);
-                        //System.out.println("当前坦克数量："+enemies.size());
                     }
                     try {
                         Thread.sleep(Enemy_Born);

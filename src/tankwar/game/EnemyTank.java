@@ -2,6 +2,7 @@ package tankwar.game;
 
 import tankwar.util.BulletsPool;
 import tankwar.util.Constant;
+import tankwar.util.EnemyTanksPool;
 import tankwar.util.MyUtil;
 
 import java.awt.*;
@@ -13,23 +14,32 @@ public class EnemyTank extends Tank {
     private int speed = enemy_Default_Speed;
     //记录AI5秒开始的时间
     private long AI_Time;
-    private List<Bullet> Enemy_bulletList = new ArrayList<>();
     private int atk = Default_Atk;
-    public int HP = Default_HP;
     private BloodBar bar =new BloodBar();
 
-    public EnemyTank(String img, int x, int y, String upImg, String leftImg, String rightImg, String downImg) {
+    private EnemyTank(String img, int x, int y, String upImg, String leftImg, String rightImg, String downImg) {
         super(img, x, y, upImg, leftImg, rightImg, downImg);
         //每创建一个敌方坦克，记录创建时间
         AI_Time = System.currentTimeMillis();
     }
 
+    public EnemyTank(){
+        AI_Time = System.currentTimeMillis();
+    }
+
     //用于创建敌方坦克
-    public static EnemyTank createEnemy() {
+    public static Tank createEnemy() {
         int x = MyUtil.getRandomNumber(0, 2) == 0 ? length : (Constant.Frame_Width - (2 * length));
-        //System.out.println("当前敌方坦克位置随机数为："+x);
         int y = GameFrame.titleBarH + length;
-        EnemyTank enemy = new EnemyTank("images/enemy1D.gif", x, y, "images/enemy1U.gif", "images/enemy1L.gif", "images/enemy1R.gif", "images/enemy1D.gif");
+        Tank enemy = EnemyTanksPool.get();
+        enemy.setX(x);
+        enemy.setY(y);
+        enemy.setImg("images/enemy1D.gif");
+        enemy.setUpImg("images/enemy1U.gif");
+        enemy.setLeftImg("images/enemy1L.gif");
+        enemy.setRightImg("images/enemy1R.gif");
+        enemy.setDownImg("images/enemy1D.gif");
+        enemy.setHP(Tank.Default_HP);
         enemy.isEnemy = true;
         enemy.dir = Direction.DOWN;
         enemy.state = State_Move;
@@ -135,10 +145,6 @@ public class EnemyTank extends Tank {
         if (Math.random() < Constant.Enemy_Fire_Percent) {//随机生成0~1的随机数实现5%
             attack();
         }
-    }
-
-    public List<Bullet> getEnemy_bulletList() {
-        return Enemy_bulletList;
     }
 
     @Override

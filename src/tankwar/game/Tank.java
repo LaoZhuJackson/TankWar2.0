@@ -1,6 +1,7 @@
 package tankwar.game;
 
 import tankwar.util.Constant;
+import tankwar.util.EnemyTanksPool;
 import tankwar.util.ExplorePool;
 import tankwar.util.MyUtil;
 
@@ -15,10 +16,10 @@ public abstract class Tank  {
     //坦克贴图
     public Image img;
     //四个方向的图片
-    private final String upImg;
-    private final String leftImg;
-    private final String rightImg;
-    private final String downImg;
+    private String upImg="images/p1tankU.gif";
+    private String leftImg="images/p1tankL.gif";
+    private String rightImg="images/p1tankR.gif";
+    private String downImg="images/p1tankD.gif";
     //坦克尺寸
     public static final int length=60;
     //默认速度 每帧4像素
@@ -31,7 +32,7 @@ public abstract class Tank  {
     public static final int State_Die=2;
     //坦克的初始生命
     public static final int Default_HP=1000;
-    private int HP=Default_HP;
+    public int HP=Default_HP;
     //坦克初始攻击
     public static int Default_Atk=100;
     //坦克坐标
@@ -43,6 +44,8 @@ public abstract class Tank  {
     public boolean isEnemy=false;
     //使用容器保存当前坦克上所有爆炸效果
     private List<Explode>explodes=new ArrayList<>();
+    //敌方子弹数组
+    public List<Bullet> Enemy_bulletList = new ArrayList<>();
 
     public Tank(String img,int x, int y,String upImg, String leftImg, String rightImg, String downImg) {
         this.img = Toolkit.getDefaultToolkit().getImage(img);//将图片参数从Image类型转换成String类型
@@ -53,6 +56,10 @@ public abstract class Tank  {
         this.leftImg = leftImg;
         this.rightImg = rightImg;
         this.downImg = downImg;
+    }
+
+    public Tank(){
+
     }
 
     //坦克移动，改变贴图和方向
@@ -112,7 +119,7 @@ public abstract class Tank  {
     }
 
     //坦克和子弹碰撞
-    public void CollideBullets(List<Bullet> bullets,int hp){
+    public void CollideBullets(List<Bullet> bullets){
         //遍历所有子弹，和当前坦克进行碰撞检测
         for (Bullet bullet : bullets) {
             int bulletX = bullet.getX();
@@ -122,7 +129,6 @@ public abstract class Tank  {
                 //子弹消失
                 bullet.setVisible(false);
                 //受到伤害
-
                 Hurt(bullet);
                 //坦克操作
                 //爆炸效果,以当前被击中的坦克坐标为爆炸坐标
@@ -141,14 +147,21 @@ public abstract class Tank  {
     private void Hurt(Bullet bullet){
         final int atk = bullet.getAtk();
         HP-=atk;
-        if (HP<0){
-            HP=0;
-            Die();
-        }
     }
+
     //坦克死亡 TODO
     private void Die(){
+        if (isEnemy){
+            //TODO 敌人坦克被消灭 归还对象池
+            EnemyTanksPool.theReturn(this);
+        }else{
+            //game over TODO
 
+        }
+    }
+
+    public boolean idDie(){
+        return HP<=0;
     }
 
     //血条内部类，表示坦克的血条
@@ -203,7 +216,65 @@ public abstract class Tank  {
         this.dir = dir;
     }
 
+    public String getUpImg() {
+        return upImg;
+    }
 
+    public void setUpImg(String upImg) {
+        this.upImg = upImg;
+    }
+
+    public String getLeftImg() {
+        return leftImg;
+    }
+
+    public void setLeftImg(String leftImg) {
+        this.leftImg = leftImg;
+    }
+
+    public String getRightImg() {
+        return rightImg;
+    }
+
+    public void setRightImg(String rightImg) {
+        this.rightImg = rightImg;
+    }
+
+    public String getDownImg() {
+        return downImg;
+    }
+
+    public void setDownImg(String downImg) {
+        this.downImg = downImg;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getHP() {
+        return HP;
+    }
+
+    public void setHP(int HP) {
+        this.HP = HP;
+    }
+
+    public List<Bullet> getEnemy_bulletList() {
+        return Enemy_bulletList;
+    }
 
     /**
      * 绘制坦克

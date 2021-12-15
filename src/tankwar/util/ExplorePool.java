@@ -6,6 +6,9 @@ import tankwar.game.Explode;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 爆炸效果对象池
+ */
 public class ExplorePool {
     public static final int Default_Pool_Size=10;
     //拿子弹的时候会新建，防止归还过多，需要限制
