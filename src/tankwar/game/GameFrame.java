@@ -122,11 +122,11 @@ public class GameFrame extends Frame implements Runnable{
     private void bulletCollideTank(){
         //我方子弹与敌方坦克碰撞
         for(EnemyTank enemy:enemies){
-            enemy.CollideBullets(playerOne.getPlayerOne_bulletList());
+            enemy.CollideBullets(playerOne.getPlayerOne_bulletList(),enemy.HP);
         }
         //敌方坦克子弹与我方坦克碰撞
         for (EnemyTank enemy : enemies) {
-            playerOne.CollideBullets(enemy.getEnemy_bulletList());
+            playerOne.CollideBullets(enemy.getEnemy_bulletList(),playerOne.HP);
         }
     }
 

@@ -15,6 +15,8 @@ public class EnemyTank extends Tank {
     private long AI_Time;
     private List<Bullet> Enemy_bulletList = new ArrayList<>();
     private int atk = Default_Atk;
+    public int HP = Default_HP;
+    private BloodBar bar =new BloodBar();
 
     public EnemyTank(String img, int x, int y, String upImg, String leftImg, String rightImg, String downImg) {
         super(img, x, y, upImg, leftImg, rightImg, downImg);
@@ -145,5 +147,7 @@ public class EnemyTank extends Tank {
         ai();
         g.drawImage(img, x, y, null);
         Enemy_drawBullets(g);
+        //绘制血条
+        bar.draw(g);
     }
 }

@@ -10,9 +10,10 @@ import java.util.List;
 public class PlayerOne extends Tank {
     //初始参数
     private int atk = Default_Atk;
-    private int HP = Default_HP;
+    public int HP = Default_HP;
     private int speed = Default_Speed;
     private String name="PLAYER ONE";
+    private BloodBar bar =new BloodBar();
 
     private List<Bullet> PlayerOne_bulletList = new ArrayList<>();
 
@@ -162,6 +163,9 @@ public class PlayerOne extends Tank {
         logic();//调用，实现移动
         g.drawImage(img, x, y, null);
         PlayerOne_drawBullets(g);
+        //绘制玩家名
         drawName(g);
+        //绘制血条
+        bar.draw(g);
     }
 }
