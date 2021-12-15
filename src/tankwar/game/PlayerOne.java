@@ -87,6 +87,17 @@ public class PlayerOne extends Tank {
         }
     }
 
+    /**
+     * 坦克销毁时处理子弹
+     */
+    public void bulletReturn(){
+        for (Bullet bullet : PlayerOne_bulletList) {
+            BulletsPool.theReturn(bullet);
+        }
+        //归还后清空
+        PlayerOne_bulletList.clear();
+    }
+
     public int getAtk() {
         return atk;
     }

@@ -78,7 +78,6 @@ public class EnemyTank extends Tank {
 
     public void attack() {
         Point p = getHeadPoint();
-        System.out.println("当前坦克子弹方向：" + dir);
         //从对象池中获取子弹对象
         Bullet bullet = BulletsPool.get();
         //设置子弹属性
@@ -102,10 +101,10 @@ public class EnemyTank extends Tank {
             Bullet bullet = Enemy_bulletList.get(i);
             if (!bullet.isVisible()) {
                 Bullet remove = Enemy_bulletList.remove(i);//从当前子弹列表移除
+                i--;
                 BulletsPool.theReturn(remove);//归还回对象池
             }
         }
-        //System.out.println("坦克子弹数量："+PlayerOne_bulletList.size());
     }
 
     //随机生成的方向
@@ -139,7 +138,6 @@ public class EnemyTank extends Tank {
             //间隔五秒，随机一个状态
             setState(MyUtil.getRandomNumber(0, 2) == 0 ? State_Stand : State_Move);//0->stand，1->move
             setDir(getRandomDirection());//随机方向
-            System.out.println("坦克方向：" + dir);
             AI_Time = System.currentTimeMillis();//重置AI_Time
         }
         if (Math.random() < Constant.Enemy_Fire_Percent) {//随机生成0~1的随机数实现5%

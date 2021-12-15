@@ -1,5 +1,7 @@
 package tankwar.game;
 
+import tankwar.util.MyUtil;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -15,21 +17,20 @@ import static tankwar.util.Constant.*;//静态引入
  * implements-->多重继承
  * runnable-->多线程
  */
-public class GameFrame extends Frame implements Runnable{
-    //定义一张和屏幕大小一致的图片
-    private BufferedImage bufImg=new BufferedImage(Frame_Width,Frame_Height,BufferedImage.TYPE_4BYTE_ABGR);
-    //游戏状态
-    public static int gameState;
-    //菜单指向
-    private int menuIndex;
+public class GameFrame extends Frame implements Runnable {
     //标题栏高度
     public static int titleBarH;
-
+    //游戏状态
+    private static int gameState;
+    //先不加载，用的时候再加载
+    private Image overImg = null;
+    //定义一张和屏幕大小一致的图片
+    private BufferedImage bufImg = new BufferedImage(Frame_Width, Frame_Height, BufferedImage.TYPE_4BYTE_ABGR);
     //定义坦克对象
     private PlayerOne playerOne;
-    private PlayerOne playerTwo;
+    private PlayerOne playerTwo;//记得修改数据类型 TODO
     //定义敌方坦克
-    private  List<Tank> enemies=new ArrayList<>();
+    private List<Tank> enemies = new ArrayList<>();
 
     /**
      * 对窗口进行初始化
@@ -39,6 +40,15 @@ public class GameFrame extends Frame implements Runnable{
         initEventListener();//添加监听事件
         //启动刷新线程
         new Thread(this).start();
+    }
+
+    //获取和修改游戏状态
+    public static int getGameState() {
+        return gameState;
+    }
+
+    public static void setGameState(int gameState) {
+        GameFrame.gameState = gameState;
     }
 
     /**
@@ -59,7 +69,7 @@ public class GameFrame extends Frame implements Runnable{
         setVisible(true);//使窗口可见
 
         //求标题栏高度
-        titleBarH=getInsets().top;
+        titleBarH = getInsets().top;
     }
 
     /**
@@ -95,12 +105,29 @@ public class GameFrame extends Frame implements Runnable{
                 break;
         }
         //使用系统画笔，将图片绘制到Frame上
-        g.drawImage(bufImg,0,0,null);
+        g.drawImage(bufImg, 0, 0, null);
     }
 
+    /**
+     * 绘制游戏结束的方法
+     *
+     * @param g
+     */
     private void drawOver(Graphics g) {
+        if (overImg == null) {
+            overImg = MyUtil.createImages("images/game_over.png");
+        }
+        //填充图片
+        g.drawImage(overImg, 0, 0, null);
 
+        g.setColor(Color.white);
+        //添加按键的提示信息
+        for (int i = 0; i < OverStr.length; i++) {
+            g.drawString(OverStr[i], x_over, y_over + Dis * i);
+            g.drawImage(Menu_Select, Select_x_over, Select_y_over, null);
+        }
     }
+
     /*
     游戏运行状态时的内容绘制
      */
@@ -119,9 +146,9 @@ public class GameFrame extends Frame implements Runnable{
         drawExplodes(g);
     }
 
-    private void bulletCollideTank(){
+    private void bulletCollideTank() {
         //我方子弹与敌方坦克碰撞
-        for(Tank enemy:enemies){
+        for (Tank enemy : enemies) {
             enemy.CollideBullets(playerOne.getPlayerOne_bulletList());
         }
         //敌方坦克子弹与我方坦克碰撞
@@ -131,7 +158,7 @@ public class GameFrame extends Frame implements Runnable{
     }
 
     //所有坦克的爆炸效果
-    private void drawExplodes(Graphics g){
+    private void drawExplodes(Graphics g) {
         //敌方坦克添加
         for (Tank enemy : enemies) {
             enemy.drawExplodes(g);
@@ -139,18 +166,18 @@ public class GameFrame extends Frame implements Runnable{
         //我方坦克
         playerOne.drawExplodes(g);
     }
+
     //绘制所有敌方坦克，如果死亡则移除
-    private void drawEnemies(Graphics g){
+    private void drawEnemies(Graphics g) {
         for (int i = 0; i < enemies.size(); i++) {
             Tank enemyTank = enemies.get(i);
-            if (enemyTank.idDie()){
+            if (enemyTank.idDie()) {
                 enemies.remove(i);
                 i--;
                 continue;
             }
             enemyTank.paintSelf(g);
         }
-        System.out.println("敌人数量："+enemies.size());
     }
 
     private void drawTwo(Graphics g) {
@@ -177,7 +204,6 @@ public class GameFrame extends Frame implements Runnable{
         //绘制黑色背景
         g.setColor(Color.BLACK);//设置画笔颜色
         g.fillRect(0, 0, Frame_Width, Frame_Height);//实心矩形
-
 
         g.setColor(Color.white);
         for (int i = 0; i < Menus.length; i++) {
@@ -228,6 +254,7 @@ public class GameFrame extends Frame implements Runnable{
                         break;
                 }
             }
+
             //按键松开时被回调的方法
             @Override
             public void keyReleased(KeyEvent e) {
@@ -251,6 +278,7 @@ public class GameFrame extends Frame implements Runnable{
             case KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D -> playerOne.setState(PlayerOne.State_Stand);
         }
     }
+
     //按键松开后的处理方法,设置状态可以解决启动停顿问题
     private void keyReleasedEventOne(int keyCode) {
         switch (keyCode) {
@@ -258,29 +286,82 @@ public class GameFrame extends Frame implements Runnable{
         }
     }
 
+    //游戏结束的按键处理 TODO
     private void keyPressedEventOver(int keyCode) {
+        switch (keyCode) {
+            case KeyEvent.VK_W:
+            case KeyEvent.VK_UP:
+                    if (temp_over==1){
+                        temp_over=2;
+                        Select_y_over+=Dis;
+                    }else {
+                        temp_over--;
+                        Select_y_over-=Dis;
+                    }
+                    repaint();
+                    break;
+            case KeyEvent.VK_S:
+            case KeyEvent.VK_DOWN:
+                //如果在最下面一项
+                if (temp_over==2) {
+                    temp_over = 1;
+                    Select_y_over -=Dis;
+                }else{
+                    Select_y_over += Dis;
+                    temp_over++;
+                }
+                break;
+            case KeyEvent.VK_ENTER:
+                if (temp_over==1){
+                    setGameState(State_Menu);
+                    resetGame();
 
+                }else{
+                    resetGame();
+                    newGame_playerOne();
+                }
+                break;
+        }
+    }
+    //重置游戏状态
+    private void resetGame(){
+        temp=1;
+        temp_over=1;
+        //归还子弹
+        playerOne.bulletReturn();
+//        playerTwo.bulletReturn();
+        //销毁自己坦克
+        playerOne=null;
+        playerTwo=null;
+        //清空敌人相关资源
+        for (Tank enemy : enemies) {
+            enemy.bulletReturn();
+        }
+        enemies.clear();
+        //重置选择图标
+        Select_y_over=y_over-32;
+        Select_y=y-32;
     }
 
     private void keyPressedEventOne(int keyCode) {
-        switch (keyCode){
-            case KeyEvent.VK_W ->{
+        switch (keyCode) {
+            case KeyEvent.VK_W -> {
                 playerOne.upward();
                 playerOne.setState(Tank.State_Move);
             }
-            case KeyEvent.VK_S ->{
+            case KeyEvent.VK_S -> {
                 playerOne.downward();
                 playerOne.setState(Tank.State_Move);
             }
-            case KeyEvent.VK_A ->{
+            case KeyEvent.VK_A -> {
                 playerOne.leftward();
                 playerOne.setState(Tank.State_Move);
             }
-            case KeyEvent.VK_D ->{
+            case KeyEvent.VK_D -> {
                 playerOne.rightward();
                 playerOne.setState(Tank.State_Move);
             }
-            case KeyEvent.VK_J ->{
+            case KeyEvent.VK_J -> {
                 playerOne.attack();
             }
         }
@@ -303,31 +384,35 @@ public class GameFrame extends Frame implements Runnable{
         switch (keyCode) {
             case KeyEvent.VK_W:
             case KeyEvent.VK_UP:
-                temp--;
-                Select_y -= Dis;
                 //如果在最上面一项
-                if (Select_y < y-32) {
-                    temp=Menus.length;
-                    Select_y=(Menus.length-1)*Dis+118;
+                if (temp==1) {
+                    temp = Menus.length;
+                    Select_y = (Menus.length - 1) * Dis + 118;
+                }else{
+                    temp--;
+                    Select_y -= Dis;
                 }
                 repaint();//进行画面更新
                 break;
             case KeyEvent.VK_S:
             case KeyEvent.VK_DOWN:
-                Select_y += Dis;
-                temp++;
                 //如果在最下面一项
-                if (Select_y >= (Menus.length*Dis+118)) {
-                    temp=1;
-                    Select_y=y-32;
+                if (temp==6) {
+                    temp = 1;
+                    Select_y = y - 32;
+                }else {
+                    Select_y += Dis;
+                    temp++;
                 }
                 break;
             case KeyEvent.VK_ENTER:
-                if(temp==State_One){
+                if (temp == State_One) {
                     newGame_playerOne();
+                }else if(temp==State_Exit){
+                    System.exit(0);
                 }
                 //TODO
-                else if(temp==State_Two){
+                else if (temp == State_Two) {
                     newGame_playerTwo();
                 }
                 break;
@@ -338,15 +423,18 @@ public class GameFrame extends Frame implements Runnable{
      * 开始新游戏的状态
      */
     private void newGame_playerOne() {
-        gameState=State_One;
+        //初始化
+        gameState = State_One;
         //创建玩家
-        playerOne=new PlayerOne("images/p1tankU.gif",125,510,"images/p1tankU.gif", "images/p1tankL.gif", "images/p1tankR.gif", "images/p1tankD.gif");
+        playerOne = new PlayerOne("images/p1tankU.gif", 125, 510, "images/p1tankU.gif", "images/p1tankL.gif", "images/p1tankR.gif", "images/p1tankD.gif");
+
+
         //使用单独线程用于控制生成敌方坦克
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
-                while(true){
-                    if(enemies.size()<Enemy_Max){
+                while (gameState==State_One) {
+                    if (enemies.size() < Enemy_Max) {
                         Tank enemy = EnemyTank.createEnemy();
                         enemies.add(enemy);
                     }
@@ -361,7 +449,7 @@ public class GameFrame extends Frame implements Runnable{
     }
 
     private void newGame_playerTwo() {
-        gameState=State_Two;
+        gameState = State_Two;
         //创建坦克对象
         //playerTwo=new PlayerTwo("images/p2tankU.gif",615,510,"images/p2tankU.gif", "images/p2tankL.gif", "images/p2tankR.gif", "images/p2tankD.gif");
     }
@@ -369,7 +457,7 @@ public class GameFrame extends Frame implements Runnable{
     @Override
     public void run() {
         //控制刷新界面
-        while (true){
+        while (true) {
             repaint();
             try {
                 Thread.sleep(Repaint_Interval);

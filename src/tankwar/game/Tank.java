@@ -1,9 +1,6 @@
 package tankwar.game;
 
-import tankwar.util.Constant;
-import tankwar.util.EnemyTanksPool;
-import tankwar.util.ExplorePool;
-import tankwar.util.MyUtil;
+import tankwar.util.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -31,7 +28,7 @@ public abstract class Tank  {
     public static final int State_Move=1;
     public static final int State_Die=2;
     //坦克的初始生命
-    public static final int Default_HP=1000;
+    public static final int Default_HP=10;
     public int HP=Default_HP;
     //坦克初始攻击
     public static int Default_Atk=100;
@@ -73,14 +70,14 @@ public abstract class Tank  {
     public void upward() {
         dir = Direction.UP;
         setImg(upImg);
-        if (!moveToBorder(x, y + speed))//先碰撞就检测再移动
+        if (!moveToBorder(x, y - speed))//先碰撞就检测再移动
             y -= speed;
     }
 
     public void rightward() {
         dir = Direction.RIGHT;
         setImg(rightImg);
-        if (!moveToBorder(x - speed, y))//先碰撞就检测再移动
+        if (!moveToBorder(x + speed, y))//先碰撞就检测再移动
             x += speed;
     }
 
@@ -107,12 +104,12 @@ public abstract class Tank  {
     }
 
     public boolean moveToBorder(int x, int y) {
-        //左右边界
-        if (x < 0 || x + length > Constant.Frame_Width) {
+        //左右的边界
+        if (x < 8 || x + length+8 > Constant.Frame_Width) {
             return true;
         }
-        //上下边界
-        else if (y < GameFrame.titleBarH || y + length > Constant.Frame_Height) {
+        //上下的边界
+        else if (y < GameFrame.titleBarH || y + length +5> Constant.Frame_Height) {
             return true;
         }
         return false;
@@ -147,16 +144,20 @@ public abstract class Tank  {
     private void Hurt(Bullet bullet){
         final int atk = bullet.getAtk();
         HP-=atk;
+        if (HP<0){
+            HP=0;
+            Die();
+        }
     }
 
-    //坦克死亡 TODO
+    //坦克死亡
     private void Die(){
         if (isEnemy){
-            //TODO 敌人坦克被消灭 归还对象池
+            //敌人坦克被消灭 归还对象池
             EnemyTanksPool.theReturn(this);
         }else{
-            //game over TODO
-
+            //game over
+            GameFrame.setGameState(Constant.State_Over);
         }
     }
 
@@ -201,6 +202,17 @@ public abstract class Tank  {
                 i--;
             }
         }
+    }
+
+    /**
+     * 坦克销毁时处理子弹
+     */
+    public void bulletReturn(){
+        for (Bullet bullet : Enemy_bulletList) {
+            BulletsPool.theReturn(bullet);
+        }
+        //归还后清空
+        Enemy_bulletList.clear();
     }
 
     //定义setImg函数
