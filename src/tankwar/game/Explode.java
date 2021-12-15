@@ -32,6 +32,13 @@ public class Explode {
     //可见属性
     private boolean visible=true;
 
+    //为构造池添加一个默认无参的构造方法
+
+
+    public Explode() {
+        index=0;
+    }
+
     public Explode(int x, int y) {
         this.x = x;
         this.y = y;
@@ -79,8 +86,8 @@ public class Explode {
     }
 
     public void paintSelf(Graphics g) {
-        if (exploreHeight<=0){
-            //注意需要除以2
+        if (exploreHeight<=0){//赋值一次即可
+            //此处调整爆炸效果出现的位置
             exploreWidth = images[0].getWidth(null)/3;
             exploreHeight = images[0].getHeight(null)/4;
         }

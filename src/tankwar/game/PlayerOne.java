@@ -79,10 +79,10 @@ public class PlayerOne extends Tank {
             Bullet bullet = PlayerOne_bulletList.get(i);
             if(!bullet.isVisible()){
                 Bullet remove = PlayerOne_bulletList.remove(i);//从当前子弹列表移除
+                i--;
                 BulletsPool.theReturn(remove);//归还回对象池
             }
         }
-        //System.out.println("坦克子弹数量："+PlayerOne_bulletList.size());
     }
 
     public int getAtk() {

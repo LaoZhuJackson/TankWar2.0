@@ -1,6 +1,7 @@
 package tankwar.game;
 
 import tankwar.util.Constant;
+import tankwar.util.ExplorePool;
 import tankwar.util.MyUtil;
 
 import java.awt.*;
@@ -121,7 +122,14 @@ public abstract class Tank  {
                 bullet.setVisible(false);
                 //坦克操作
                 //爆炸效果,以当前被击中的坦克坐标为爆炸坐标
-                explodes.add(new Explode(x,y));
+                Explode explode = ExplorePool.get();
+                //赋值
+                explode.setX(x);
+                explode.setY(y);
+                explode.setVisible(true);
+                explode.setIndex(0);
+
+                explodes.add(explode);
             }
         }
     }
@@ -133,6 +141,17 @@ public abstract class Tank  {
     public void drawExplodes(Graphics g){
         for (Explode explode : explodes) {
             explode.paintSelf(g);
+        }
+        //将不可见的爆炸效果删除，归还回爆炸池
+        for (int i = 0; i < explodes.size(); i++) {
+            Explode explode = explodes.get(i);
+            if (!explode.isVisible()){
+                Explode remove = explodes.remove(i);
+                //还原
+                ExplorePool.theReturn(remove);
+                //remove后回退一格,因为后一个元素会顶上来
+                i--;
+            }
         }
     }
 
