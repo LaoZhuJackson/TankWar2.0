@@ -39,6 +39,7 @@ public class Constant {
     };
     //字体
     public static final Font Game_Font = new Font("宋体", Font.BOLD, 24);
+    public static final Font Game_Small_Font = new Font("宋体", Font.BOLD, 12);
     public static final int Repaint_Interval = 30;
     //图片
     public static final Image Menu_Select = Toolkit.getDefaultToolkit().getImage("images/selectTank.gif");

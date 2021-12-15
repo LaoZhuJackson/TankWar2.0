@@ -12,6 +12,7 @@ public class PlayerOne extends Tank {
     private int atk = Default_Atk;
     private int HP = Default_HP;
     private int speed = Default_Speed;
+    private String name="PLAYER ONE";
 
     private List<Bullet> PlayerOne_bulletList = new ArrayList<>();
 
@@ -137,10 +138,30 @@ public class PlayerOne extends Tank {
         return PlayerOne_bulletList;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * 绘制坦克名字
+     * @param g
+     */
+    private void drawName(Graphics g){
+        g.setColor(Color.white);
+        //设置字体大小
+        g.setFont(Constant.Game_Small_Font);
+        g.drawString(name,x,y-20);
+    }
+
     @Override
     public void paintSelf(Graphics g) {
         logic();//调用，实现移动
         g.drawImage(img, x, y, null);
         PlayerOne_drawBullets(g);
+        drawName(g);
     }
 }
