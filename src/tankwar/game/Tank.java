@@ -1,5 +1,6 @@
 package tankwar.game;
 
+import tankwar.map.MapTile;
 import tankwar.util.*;
 
 import java.awt.*;
@@ -28,7 +29,7 @@ public abstract class Tank  {
     public static final int State_Move=1;
     public static final int State_Die=2;
     //坦克的初始生命
-    public static final int Default_HP=10;
+    public static final int Default_HP=1000;
     public int HP=Default_HP;
     //坦克初始攻击
     public static int Default_Atk=100;
@@ -122,7 +123,7 @@ public abstract class Tank  {
             int bulletX = bullet.getX();
             int bulletY = bullet.getY();
             //子弹与坦克碰撞
-            if (MyUtil.isCollide(this.x +length/2,y+length/2,length/2,bulletX,bulletY)){
+            if (MyUtil.isCollide(this.x +length/2,y+length/2,length/2+6,bulletX,bulletY)){
                 //子弹消失
                 bullet.setVisible(false);
                 //受到伤害

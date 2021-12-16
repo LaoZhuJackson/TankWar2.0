@@ -1,6 +1,8 @@
 package tankwar.game;
 
 import tankwar.map.GameMap;
+import tankwar.map.MapTile;
+import tankwar.util.MapTilePool;
 import tankwar.util.MyUtil;
 
 import javax.swing.*;
@@ -149,6 +151,9 @@ public class GameFrame extends Frame implements Runnable {
         //子弹与坦克的碰撞方法
         bulletCollideTank();
 
+        //子弹和地图的碰撞
+        bulletCollideMapTile();
+
         //调用绘制爆炸效果的方法
         drawExplodes(g);
     }
@@ -162,6 +167,28 @@ public class GameFrame extends Frame implements Runnable {
         for (Tank enemy : enemies) {
             playerOne.CollideBullets(enemy.getEnemy_bulletList());
         }
+    }
+
+    //子弹和地图的碰撞
+    private void bulletCollideMapTile(){
+        List<MapTile> tiles = gameMap.getTiles();
+        for (MapTile tile : tiles) {
+            //TODO playTwo
+            //己方子弹碰撞地图,isCollideBullet有地图块销毁功能
+            if (tile.isCollideBullet(playerOne.getPlayerOne_bulletList())){
+                tile.setVisible(false);
+                MapTilePool.theReturn(tile);
+            }
+            //敌方坦克碰撞地图
+            for (Tank enemy : enemies) {
+                if (tile.isCollideBullet(enemy.getEnemy_bulletList())){
+                    tile.setVisible(false);
+                    MapTilePool.theReturn(tile);
+                }
+            }
+        }
+        //清理所有被销毁的地图块
+        gameMap.clearInvisible();
     }
 
     //所有坦克的爆炸效果
@@ -293,7 +320,7 @@ public class GameFrame extends Frame implements Runnable {
         }
     }
 
-    //游戏结束的按键处理 TODO
+    //游戏结束的按键处理
     private void keyPressedEventOver(int keyCode) {
         switch (keyCode) {
             case KeyEvent.VK_W:

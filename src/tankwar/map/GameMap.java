@@ -33,17 +33,54 @@ public class GameMap {
      * 初始化地图元素块
      */
     private void initMap(){
-        final int Count=20;
+        final int Count=5;
         for (int i = 0; i < Count; i++) {
             MapTile tile = MapTilePool.get();
             //随机生成 TODO 设计地图
             int x= MyUtil.getRandomNumber(Map_x,Map_x+width-MapTile.tileW);
             int y= MyUtil.getRandomNumber(Map_y,Map_y+height-MapTile.tileW);
-            System.out.println(MapTile.tileW);
+            //如果新生成的和已存在的块有重叠
+            if (isOverlap(tiles,x,y)){
+                i--;
+                continue;
+            }
             tile.setX(x);
             tile.setY(y);
             tiles.add(tile);
         }
+    }
+
+    /**
+     * 判断砖块是否重叠
+     * @param tiles
+     * @param x
+     * @param y
+     * @return 重叠返回true，否则返回false
+     */
+    private boolean isOverlap(List<MapTile> tiles,int x,int y){
+        for (MapTile tile : tiles) {
+            int tileX=tile.getX();
+            int tileY=tile.getY();
+            if (Math.abs(tileX-x)<MapTile.tileW && Math.abs(tileY-y)<MapTile.tileW){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 移除所有不可见地图块
+     */
+    public void clearInvisible(){
+        for (int i = 0; i < tiles.size(); i++) {
+            MapTile tile = tiles.get(i);
+            if (!tile.isVisible())
+                tiles.remove(i);
+        }
+    }
+
+    public List<MapTile> getTiles() {
+        return tiles;
     }
 
     public void draw(Graphics g){
