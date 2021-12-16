@@ -1,5 +1,6 @@
 package tankwar.game;
 
+import tankwar.map.GameMap;
 import tankwar.util.MyUtil;
 
 import javax.swing.*;
@@ -31,6 +32,9 @@ public class GameFrame extends Frame implements Runnable {
     private PlayerOne playerTwo;//记得修改数据类型 TODO
     //定义敌方坦克
     private List<Tank> enemies = new ArrayList<>();
+
+    //定义地图相关内容
+    private GameMap gameMap;
 
     /**
      * 对窗口进行初始化
@@ -138,6 +142,9 @@ public class GameFrame extends Frame implements Runnable {
 
         drawEnemies(g);
         playerOne.paintSelf(g);//越后绘制，越在上层
+
+        //绘制地图
+        gameMap.draw(g);
 
         //子弹与坦克的碰撞方法
         bulletCollideTank();
@@ -338,6 +345,9 @@ public class GameFrame extends Frame implements Runnable {
             enemy.bulletReturn();
         }
         enemies.clear();
+        //清空地图资源
+        gameMap=null;
+
         //重置选择图标
         Select_y_over=y_over-32;
         Select_y=y-32;
@@ -428,6 +438,7 @@ public class GameFrame extends Frame implements Runnable {
         //创建玩家
         playerOne = new PlayerOne("images/p1tankU.gif", 125, 510, "images/p1tankU.gif", "images/p1tankL.gif", "images/p1tankR.gif", "images/p1tankD.gif");
 
+        gameMap=new GameMap();
 
         //使用单独线程用于控制生成敌方坦克
         new Thread() {
