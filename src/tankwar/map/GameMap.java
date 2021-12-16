@@ -33,7 +33,7 @@ public class GameMap {
      * 初始化地图元素块
      */
     private void initMap(){
-        final int Count=5;
+        final int Count=20;
         for (int i = 0; i < Count; i++) {
             MapTile tile = MapTilePool.get();
             //随机生成 TODO 设计地图

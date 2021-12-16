@@ -38,19 +38,19 @@ public class PlayerOne extends Tank {
     private void move() {
         switch (dir) {
             case UP:
-                if (!moveToBorder(x, y - speed))//先碰撞就检测再移动
+                if (!moveToBorder(x, y - speed)&&!isCollideTile(x, y - speed))//先碰撞就检测再移动
                     y -= speed;
                 break;
             case DOWN:
-                if (!moveToBorder(x, y + speed))//先碰撞就检测再移动
+                if (!moveToBorder(x, y + speed)&&!isCollideTile(x, y + speed))//先碰撞就检测再移动
                     y += speed;
                 break;
             case LEFT:
-                if (!moveToBorder(x - speed, y))//先碰撞就检测再移动
+                if (!moveToBorder(x - speed, y)&&!isCollideTile(x - speed, y))//先碰撞就检测再移动
                     x -= speed;
                 break;
             case RIGHT:
-                if (!moveToBorder(x + speed, y))//先碰撞就检测再移动
+                if (!moveToBorder(x + speed, y)&&!isCollideTile(x + speed, y))//先碰撞就检测再移动
                     x += speed;
                 break;
         }

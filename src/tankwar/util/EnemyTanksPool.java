@@ -43,6 +43,5 @@ public class EnemyTanksPool {
             return;
         }
         pool.add(tank);
-        //System.out.println("对象池中归还了一个子弹对象，当前数量为："+pool.size());
     }
 }

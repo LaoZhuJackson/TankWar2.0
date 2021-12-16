@@ -9,7 +9,7 @@ import java.awt.*;
  */
 public class Explode {
     //总时长为16帧
-    public static final int Explode_Frame_Count = 8;
+    public static final int Explode_Frame_Count = 16;
     //导入资源
     private static Image[] images;
     //爆炸效果图的宽高
@@ -20,7 +20,7 @@ public class Explode {
         images = new Image[Explode_Frame_Count];
         //利用数组存放爆炸动画帧
         for (int i = 0; i < images.length; i++) {
-            int j=i+1;
+            int j=i/2+1;
             images[i] = MyUtil.createImages("images/blast" + j + ".gif");
         }
     }
@@ -86,15 +86,15 @@ public class Explode {
     }
 
     public void paintSelf(Graphics g) {
-        if (exploreHeight<=0){//赋值一次即可
-            //此处调整爆炸效果出现的位置
-            exploreWidth = images[0].getWidth(null)/3;
-            exploreHeight = images[0].getHeight(null)/4;
-        }
+        //此处调整爆炸效果出现的位置
+        exploreWidth = 136/3;
+        exploreHeight = 107/4;
         if (!visible)
             return;
-        g.drawImage(images[index], x-exploreWidth, y-exploreHeight, null);
-        index++;
+        for (int i = 0; i < Explode_Frame_Count; i++) {
+            g.drawImage(images[i], x-exploreWidth, y-exploreHeight, null);
+            index++;
+        }
         //播放完最后一帧设置为不可见
         if (index >= Explode_Frame_Count) {
             visible = false;

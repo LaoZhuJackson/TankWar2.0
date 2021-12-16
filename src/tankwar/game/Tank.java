@@ -1,5 +1,6 @@
 package tankwar.game;
 
+import tankwar.map.GameMap;
 import tankwar.map.MapTile;
 import tankwar.util.*;
 
@@ -57,35 +58,34 @@ public abstract class Tank  {
     }
 
     public Tank(){
-
     }
 
     //坦克移动，改变贴图和方向
     public void leftward() {
         dir = Direction.LEFT;
         setImg(leftImg);
-        if (!moveToBorder(x - speed, y))//先碰撞就检测再移动
+        if (!moveToBorder(x - speed, y)&&!isCollideTile(x - speed, y))//先碰撞就检测再移动
             x -= speed;
     }
 
     public void upward() {
         dir = Direction.UP;
         setImg(upImg);
-        if (!moveToBorder(x, y - speed))//先碰撞就检测再移动
+        if (!moveToBorder(x, y - speed)&&!isCollideTile(x, y - speed))//先碰撞就检测再移动
             y -= speed;
     }
 
     public void rightward() {
         dir = Direction.RIGHT;
         setImg(rightImg);
-        if (!moveToBorder(x + speed, y))//先碰撞就检测再移动
+        if (!moveToBorder(x + speed, y)&&!isCollideTile(x + speed, y))//先碰撞就检测再移动
             x += speed;
     }
 
     public void downward() {
         dir = Direction.DOWN;
         setImg(downImg);
-        if (!moveToBorder(x, y + speed))//先碰撞就检测再移动
+        if (!moveToBorder(x, y + speed)&&!isCollideTile(x, y + speed))//先碰撞就检测再移动
             y += speed;
     }
     //获取坦克头部坐标
@@ -116,6 +116,17 @@ public abstract class Tank  {
         return false;
     }
 
+    //判断坦克与地图碰撞
+    public boolean isCollideTile(int x,int y){
+        GameMap gameMap = GameFrame.gameMap;
+        Rectangle nextstep=new Rectangle(x,y,length,length);
+        for (MapTile tile : gameMap.getTiles()) {
+            if (nextstep.intersects(tile.getRec()))
+                return true;
+        }
+        return false;
+    }
+
     //坦克和子弹碰撞
     public void CollideBullets(List<Bullet> bullets){
         //遍历所有子弹，和当前坦克进行碰撞检测
@@ -128,25 +139,29 @@ public abstract class Tank  {
                 bullet.setVisible(false);
                 //受到伤害
                 Hurt(bullet);
-                //坦克操作
-                //爆炸效果,以当前被击中的坦克坐标为爆炸坐标
-                Explode explode = ExplorePool.get();
-                //赋值
-                explode.setX(x);
-                explode.setY(y);
-                explode.setVisible(true);
-                explode.setIndex(0);
-
-                explodes.add(explode);
             }
         }
     }
+
+    public void addExplode(int x,int y){
+        //爆炸效果,以当前被击中的坦克坐标为爆炸坐标
+        Explode explode = ExplorePool.get();
+        //赋值
+        explode.setX(x);
+        explode.setY(y);
+        explode.setVisible(true);
+        explode.setIndex(0);
+        System.out.println("调用addExplode");
+        explodes.add(explode);
+    }
+
     //坦克受到伤害
     private void Hurt(Bullet bullet){
         final int atk = bullet.getAtk();
         HP-=atk;
-        if (HP<0){
+        if (HP<=0){
             HP=0;
+            addExplode(x,y);
             Die();
         }
     }
@@ -287,6 +302,10 @@ public abstract class Tank  {
 
     public List<Bullet> getEnemy_bulletList() {
         return Enemy_bulletList;
+    }
+
+    public Rectangle getRec() {
+        return new Rectangle(x, y, length, length);
     }
 
     /**

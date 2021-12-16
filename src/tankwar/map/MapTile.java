@@ -59,6 +59,10 @@ public class MapTile {
         this.visible = visible;
     }
 
+    public Rectangle getRec() {
+        return new Rectangle(x, y, tileW, tileW);
+    }
+
     /**
      * 判断地图块是否和子弹碰撞
      * @param bullets

@@ -36,7 +36,7 @@ public class GameFrame extends Frame implements Runnable {
     private List<Tank> enemies = new ArrayList<>();
 
     //定义地图相关内容
-    private GameMap gameMap;
+    public static GameMap gameMap;
 
     /**
      * 对窗口进行初始化
@@ -151,11 +151,11 @@ public class GameFrame extends Frame implements Runnable {
         //子弹与坦克的碰撞方法
         bulletCollideTank();
 
-        //子弹和地图的碰撞
-        bulletCollideMapTile();
-
         //调用绘制爆炸效果的方法
         drawExplodes(g);
+
+        //子弹和地图的碰撞
+        bulletCollideMapTile();
     }
 
     private void bulletCollideTank() {
@@ -197,8 +197,6 @@ public class GameFrame extends Frame implements Runnable {
         for (Tank enemy : enemies) {
             enemy.drawExplodes(g);
         }
-        //我方坦克
-        playerOne.drawExplodes(g);
     }
 
     //绘制所有敌方坦克，如果死亡则移除
