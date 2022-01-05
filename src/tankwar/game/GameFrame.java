@@ -2,6 +2,7 @@ package tankwar.game;
 
 import tankwar.map.GameMap;
 import tankwar.map.MapTile;
+import tankwar.util.Constant;
 import tankwar.util.MapTilePool;
 import tankwar.util.MyUtil;
 
@@ -179,16 +180,38 @@ public class GameFrame extends Frame implements Runnable {
                 tile.setVisible(false);
                 MapTilePool.theReturn(tile);
             }
-            //敌方坦克碰撞地图
+            //敌方坦克子弹碰撞地图
             for (Tank enemy : enemies) {
                 if (tile.isCollideBullet(enemy.getEnemy_bulletList())){
                     tile.setVisible(false);
                     MapTilePool.theReturn(tile);
+                    //敌方坦克击中基地
+                    if (tile.isHome()){
+                        delayOver(1000);
+                    }
                 }
             }
         }
         //清理所有被销毁的地图块
         gameMap.clearInvisible();
+    }
+
+    /**
+     * 延迟若干毫秒后结束游戏
+     * @param millisecond
+     */
+    public void delayOver(int millisecond){
+        //停留一秒
+        new Thread(){
+            public void run(){
+                try {
+                    Thread.sleep(millisecond);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                GameFrame.setGameState(State_Over);
+            }
+        }.start();
     }
 
     //所有坦克的爆炸效果

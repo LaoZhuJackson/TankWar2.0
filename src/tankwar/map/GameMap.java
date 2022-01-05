@@ -25,6 +25,9 @@ public class GameMap {
     //地图元素块容器
     private List<MapTile> tiles=new ArrayList<>();
 
+    //大本营
+    private TankHome home;
+
     public GameMap(){
         initMap();
     }
@@ -48,6 +51,13 @@ public class GameMap {
             tile.setY(y);
             tiles.add(tile);
         }
+        //初始化大本营
+        home=new TankHome();
+        addHome();
+    }
+    //将基地方块放入地图容器列表中
+    private void addHome(){
+        tiles.addAll(home.getTiles());
     }
 
     /**

@@ -11,12 +11,12 @@ import java.util.List;
  * 地图元素块
  */
 public class MapTile {
-    private static Image tileImg;
+    private Image tileImg= MyUtil.createImages("images/walls.gif");
+    //判断当前地图块是否为基地
+    private boolean isHome=false;
     public static int tileW =60;
     public static int radius =tileW>>1;
-    static {
-        tileImg= MyUtil.createImages("images/walls.gif");
-    }
+
     //图片左上角坐标
     private int x,y;
     private boolean visible=true;
@@ -24,6 +24,13 @@ public class MapTile {
     public MapTile(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public MapTile(Image tileImg, int x, int y) {
+        this.tileImg = tileImg;
+        this.x = x;
+        this.y = y;
+        isHome=true;
     }
 
     public MapTile() {
@@ -61,6 +68,10 @@ public class MapTile {
 
     public Rectangle getRec() {
         return new Rectangle(x, y, tileW, tileW);
+    }
+
+    public boolean isHome() {
+        return isHome;
     }
 
     /**
